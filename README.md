@@ -23,5 +23,12 @@ go get github.com/abiosoft/caddyplug
     -uninstall uninstall plugins
 ```
 
+Example
+```sh
+$ caddyplug git linode
+ ✓ git
+ ✓ linode
+```
+
 ## Note
 This is not an official Caddy product.
