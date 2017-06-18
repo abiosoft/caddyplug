@@ -8,6 +8,11 @@ caddyplug is [Caddy](https://caddyserver.com) plugin manager using Go plugins.
 * Linux
 * Caddy with [Plugin Loader](http://) [Still WIP].
 
+## Install
+```
+go get github.com/abiosoft/caddyplug
+```
+
 ## Usage
 ```
   Usage:
