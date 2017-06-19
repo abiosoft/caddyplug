@@ -16,7 +16,6 @@ func init() {
 func loadPlugins(pluginType string) {
 	dir, err := os.Open(filepath.Join(pluginsDir(), pluginType))
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	plugins, err := dir.Readdirnames(-1)
