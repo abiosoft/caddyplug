@@ -2,19 +2,23 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
+	"github.com/abiosoft/errs"
 	"github.com/fatih/color"
 )
 
 var (
 	commands = map[string]func([]string){
-		"install":   installPlugins,
-		"uninstall": uninstallPlugins,
-		"list":      listPlugins,
-		"help":      func([]string) { usage() },
+		"install":       installPlugins,
+		"uninstall":     uninstallPlugins,
+		"list":          listPlugins,
+		"install-caddy": installCaddy,
+		"help":          func([]string) { usage() },
 	}
 
 	successMark = color.GreenString("✓")
@@ -100,5 +104,44 @@ func listPlugins([]string) {
 			fmt.Println(check, plugin.Name)
 		}
 	}
+}
 
+const (
+	pluginLoaderFile = "caddy/caddymain/pluginloader.go"
+	pluginLoaderSrc  = `package caddymain
+	import _ "github.com/abiosoft/caddyplug"`
+)
+
+func installCaddy([]string) {
+	fmt.Println("installing Caddy...")
+	outputFile := "/usr/local/bin/caddy"
+	// check if GOBIN is in PATH and use it instead
+	for _, binPath := range strings.Split(os.Getenv("PATH"), string([]byte{filepath.ListSeparator})) {
+		if filepath.Clean(binPath) == filepath.Join(goPath(), "bin") {
+			outputFile = filepath.Join(goPath(), "bin", "caddy")
+			break
+		}
+	}
+
+	var e errs.Group
+	pluginFile := filepath.Join(goPath(), "src", caddyPackage, pluginLoaderFile)
+	e.Add(func() error {
+		return ioutil.WriteFile(pluginFile, []byte(pluginLoaderSrc), 0644)
+	})
+	e.Add(func() error {
+		return shellCmd{}.
+			run("go", "build", "-o", outputFile, caddyPackage+"/caddy")
+	})
+	e.Add(func() error {
+		fmt.Println(" ", successMark, "installed Caddy in", outputFile)
+		return nil
+	})
+	e.Add(func() error {
+		return os.Remove(pluginFile)
+	})
+
+	if err := e.Exec(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

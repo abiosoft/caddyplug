@@ -30,7 +30,7 @@ func (f fetcherFunc) FetchPlugins() ([]Plugin, error) { return f() }
 func fetchHTTPPlugins() ([]Plugin, error) {
 	var plugins []Plugin
 	fset := token.NewFileSet()
-	file := filepath.Join(goPath(), "src", pluginFile)
+	file := filepath.Join(goPath(), "src", directivesFile)
 	f, err := parser.ParseFile(fset, file, nil, parser.ParseComments)
 	if err != nil {
 		return plugins, err
@@ -93,10 +93,17 @@ func fetchDNSPlugins() ([]Plugin, error) {
 
 func fetchCaddy() error {
 	var e errs.Group
-	e.Add(func() error { return shellCmd{}.run("go", "get", "-d", "github.com/mholt/caddy") })
+	e.Add(func() error {
+		return shellCmd{}.run("go", "get", "-d", "github.com/mholt/caddy")
+	})
 	caddyPath := filepath.Join(goPath(), "src", "github.com/mholt/caddy")
-	e.Add(func() error { return shellCmd{Dir: caddyPath, Silent: true}.run("git", "checkout", caddyVersion) })
-	e.Add(func() error { return shellCmd{}.run("go", "get", "-v", "github.com/mholt/caddy") })
+	e.Add(func() error {
+		return shellCmd{Dir: caddyPath, Silent: true}.
+			run("git", "checkout", caddyVersion)
+	})
+	e.Add(func() error {
+		return shellCmd{}.run("go", "get", "-v", "github.com/mholt/caddy")
+	})
 	return e.Exec()
 }
 

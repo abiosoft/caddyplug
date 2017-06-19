@@ -14,8 +14,9 @@ const (
 	caddyVersion        = "master"
 	dnsProvidersVersion = "master"
 
-	pluginFile          = "github.com/mholt/caddy/caddyhttp/httpserver/plugin.go"
+	directivesFile      = "github.com/mholt/caddy/caddyhttp/httpserver/plugin.go"
 	dnsProvidersPackage = "github.com/caddyserver/dnsproviders"
+	caddyPackage        = "github.com/mholt/caddy"
 
 	pluginSrc = `package main
 
@@ -25,12 +26,13 @@ import _ "{package}"
 
 func usage() {
 	fmt.Println(`  Usage:
-    caddyplug <command> plugins...
+    caddyplug <command> [plugins...]
 
   Commands:
-    install    install plugins
-    uninstall  uninstall plugins
-    list       list plugins
+    install       install plugins
+    uninstall     uninstall plugins
+    list          list plugins
+    install-caddy install caddy
 `)
 }
 
@@ -67,6 +69,7 @@ func main() {
 type shellCmd struct {
 	Silent bool
 	Dir    string
+	Stdin  bool
 }
 
 func (s shellCmd) run(command string, args ...string) error {
@@ -74,6 +77,9 @@ func (s shellCmd) run(command string, args ...string) error {
 	if !s.Silent {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+	}
+	if s.Stdin {
+		cmd.Stdin = os.Stdin
 	}
 	if s.Dir != "" {
 		cmd.Dir = s.Dir

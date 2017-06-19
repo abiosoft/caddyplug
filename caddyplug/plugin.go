@@ -3,7 +3,6 @@ package main
 import (
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -72,8 +71,7 @@ func generate(dir string, p Plugin) (string, error) {
 }
 
 func build(src string, output string) error {
-	cmd := exec.Command("go", "build", "-buildmode=plugin", "-o", output, src)
-	return cmd.Run()
+	return shellCmd{}.run("go", "build", "-buildmode=plugin", "-o", output, src)
 }
 
 func install(packageName string) error {

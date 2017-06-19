@@ -16,12 +16,13 @@ go get github.com/abiosoft/caddyplug/caddyplug
 ## Usage
 ```
   Usage:
-    caddyplug <command> plugins...
+    caddyplug <command> [plugins...]
 
   Commands:
-    install    install plugins
-    uninstall  uninstall plugins
-    list       list plugins
+    install       install plugins
+    uninstall     uninstall plugins
+    list          list plugins
+    install-caddy install caddy
 ```
 
 Example
