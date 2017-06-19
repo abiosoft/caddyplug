@@ -1,7 +1,7 @@
 caddyplug
 =========
 
-caddyplug is [Caddy](https://caddyserver.com) plugin manager using Go plugins.
+caddyplug is experimental [Caddy](https://caddyserver.com) plugin manager using Go plugins.
 
 ## Requirements
 * Go 1.8
