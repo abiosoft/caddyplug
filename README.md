@@ -16,16 +16,17 @@ go get github.com/abiosoft/caddyplug
 ## Usage
 ```
   Usage:
-    caddyplug [flags] plugins...
+    caddyplug <command> plugins...
 
-  Flags:
-    -list      list plugins
-    -uninstall uninstall plugins
+  Commands:
+    install    install plugins
+    uninstall  uninstall plugins
+    list       list plugins
 ```
 
 Example
 ```sh
-$ caddyplug git linode
+$ caddyplug install git linode
  ✓ git
  ✓ linode
 ```
