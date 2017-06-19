@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/sys/unix"
+
 	"github.com/abiosoft/errs"
 	"github.com/fatih/color"
 )
@@ -114,12 +116,18 @@ const (
 
 func installCaddy([]string) {
 	fmt.Println("installing Caddy...")
-	outputFile := "/usr/local/bin/caddy"
-	// check if GOBIN is in PATH and use it instead
-	for _, binPath := range strings.Split(os.Getenv("PATH"), string([]byte{filepath.ListSeparator})) {
-		if filepath.Clean(binPath) == filepath.Join(goPath(), "bin") {
-			outputFile = filepath.Join(goPath(), "bin", "caddy")
-			break
+	outputFile := "/usr/bin/caddy"
+
+	// if not writable, fall back to local paths
+	if !writable("/usr/bin") {
+		outputFile = "/usr/local/bin/caddy"
+		// check if GOBIN is in PATH and use it instead
+		for _, binPath := range strings.Split(os.Getenv("PATH"),
+			string([]byte{filepath.ListSeparator})) {
+			if filepath.Clean(binPath) == filepath.Join(goPath(), "bin") {
+				outputFile = filepath.Join(goPath(), "bin", "caddy")
+				break
+			}
 		}
 	}
 
@@ -144,4 +152,8 @@ func installCaddy([]string) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func writable(path string) bool {
+	return unix.Access(path, unix.W_OK) == nil
 }
