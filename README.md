@@ -46,9 +46,9 @@ Desired:
 ### Docker
 Current:
 * Search for Docker image with desired plugins
-* Give up and clone abiosoft/caddy image
+* Give up and clone abiosoft/caddy (or similar) image
 * Modify plugins arg in Dockerfile
-* Worry about keeping track of changes to parent git/docker repo.
+* Worry about keeping track of upgrades to parent git/docker repo.
 
 Desired:
 
@@ -60,7 +60,7 @@ RUN caddyplug install git hugo digitalocean
 
 ## Caveats
 * Only works on Linux.
-* Due to limitations of Go plugins, installing Caddy with caddyplug is necessary to prevent `plugin was built with different package` errors.
+* Due to limitations of Go plugins, Caddy and plugins must be built with same Go version. Installing Caddy with caddyplug is recommended to ensure this.
 * Not compatible with caddyserver.com/download yet. Requires [`CGO_ENABLED=1`](https://github.com/golang/go/issues/19569).
 * Large Docker images. Multi-stage builds may help.
 * Fetches `master` of plugin repositories.
