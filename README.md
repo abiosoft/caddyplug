@@ -6,7 +6,7 @@ caddyplug is [Caddy](https://caddyserver.com) plugin manager using Go plugins.
 ## Requirements
 * Go 1.8
 * Linux
-* Caddy with [Plugin Loader](http://) [Still WIP].
+* Caddy with hook.pluginloader plugin.
 
 ## Install
 ```
@@ -32,4 +32,5 @@ $ caddyplug install git linode
 ```
 
 ## Note
-This is not an official Caddy product.
+* This is experimental and reliant on the stability of Go plugins.
+* This is not an official Caddy product.
