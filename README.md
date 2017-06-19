@@ -63,7 +63,8 @@ RUN caddyplug install git hugo digitalocean
 * Due to limitations of Go plugins, installing Caddy with caddyplug is necessary to prevent `plugin was built with different package` errors.
 * Not compatible with caddyserver.com/download yet. Requires [`CGO_ENABLED=1`](https://github.com/golang/go/issues/19569).
 * Large Docker images. Multi-stage builds may help.
-* Fetches `master` of plugin repositories. 
+* Fetches `master` of plugin repositories.
+* `go build --buildmode=plugin` is slow. Stop building on-demand, maybe.
 * This is experimental and reliant on the [stability of Go plugins](https://github.com/golang/go/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20plugins).
 
 ## Note
