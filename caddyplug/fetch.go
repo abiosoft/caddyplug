@@ -92,15 +92,28 @@ func fetchDNSPlugins() ([]Plugin, error) {
 }
 
 func fetchCaddy() error {
-	return runCmd("go", "get", "-v", "github.com/mholt/caddy")
+	var e errs.Group
+	e.Add(func() error { return shellCmd{}.run("go", "get", "-d", "github.com/mholt/caddy") })
+	caddyPath := filepath.Join(goPath(), "src", "github.com/mholt/caddy")
+	e.Add(func() error { return shellCmd{Dir: caddyPath, Silent: true}.run("git", "checkout", caddyVersion) })
+	e.Add(func() error { return shellCmd{}.run("go", "get", "-v", "github.com/mholt/caddy") })
+	return e.Exec()
 }
 
 func fetchDNSProviders() error {
+	var e errs.Group
 	dnsDir := filepath.Join(goPath(), "src", dnsProvidersPackage)
-	if stat, err := os.Stat(dnsDir); err == nil && stat.IsDir() {
-		return nil
+	if _, err := os.Stat(dnsDir); err != nil {
+		e.Add(func() error {
+			return shellCmd{}.run("git", "clone", "https://"+dnsProvidersPackage, dnsDir)
+		})
 	}
-	return runCmd("git", "clone", "https://"+dnsProvidersPackage, dnsDir)
+	dnsProvidersPath := filepath.Join(goPath(), "src", dnsProvidersPackage)
+	e.Add(func() error {
+		return shellCmd{Dir: dnsProvidersPath, Silent: true}.
+			run("git", "checkout", dnsProvidersVersion)
+	})
+	return e.Exec()
 }
 
 func fetchDependencies() error {

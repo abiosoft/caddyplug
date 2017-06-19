@@ -9,6 +9,11 @@ import (
 )
 
 const (
+	// TODO Go plugins require plugins and loaders to be built with same library versions.
+	// this is not scalable, introduce flags maybe.
+	caddyVersion        = "v0.10.3"
+	dnsProvidersVersion = "bbadd53f2ab1e5193e280e8cdddc2d5aae35c619"
+
 	pluginFile          = "github.com/mholt/caddy/caddyhttp/httpserver/plugin.go"
 	dnsProvidersPackage = "github.com/caddyserver/dnsproviders"
 
@@ -59,10 +64,20 @@ func main() {
 	cmd(pluginNames)
 }
 
-func runCmd(command string, args ...string) error {
+type shellCmd struct {
+	Silent bool
+	Dir    string
+}
+
+func (s shellCmd) run(command string, args ...string) error {
 	cmd := exec.Command(command, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	if !s.Silent {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
+	if s.Dir != "" {
+		cmd.Dir = s.Dir
+	}
 	return cmd.Run()
 }
 

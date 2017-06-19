@@ -77,5 +77,5 @@ func build(src string, output string) error {
 }
 
 func install(packageName string) error {
-	return runCmd("go", "get", "-v", packageName)
+	return shellCmd{}.run("go", "get", "-v", packageName)
 }
