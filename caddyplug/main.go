@@ -36,10 +36,6 @@ func init() {
 		fmt.Println("caddyplug is only supported on Linux")
 		os.Exit(1)
 	}
-	if err := initPlugins(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }
 
 func main() {
@@ -56,6 +52,11 @@ func main() {
 		fmt.Println("unkown command", os.Args[1])
 		usage()
 		return
+	}
+
+	if err := initPlugins(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	cmd(pluginNames)
 }
