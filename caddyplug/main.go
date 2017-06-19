@@ -18,8 +18,6 @@ import _ "{package}"
 `
 )
 
-var ()
-
 func usage() {
 	fmt.Println(`  Usage:
     caddyplug <command> plugins...
