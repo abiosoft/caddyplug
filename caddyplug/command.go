@@ -31,6 +31,7 @@ func installPlugins(pluginNames []string) {
 			errored = true
 			continue
 		}
+		fmt.Println("installing", plugin.Name+"...")
 		if err := plugin.Build(); err != nil {
 			fmt.Println(err)
 			errored = true
