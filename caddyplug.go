@@ -21,7 +21,7 @@ func pluginsDir() string {
 	return filepath.Join(os.Getenv("HOME"), "lib", "caddy")
 }
 
-func hook(event caddy.EventName, info interface{}) error {
+var hook caddy.EventHook = func(event caddy.EventName, info interface{}) error {
 	switch event {
 	case caddy.StartupEvent:
 		if runtime.GOOS != "linux" {
