@@ -10,7 +10,7 @@ caddyplug is [Caddy](https://caddyserver.com) plugin manager using Go plugins.
 
 ## Install
 ```
-go get github.com/abiosoft/caddyplug
+go get github.com/abiosoft/caddyplug/caddyplug
 ```
 
 ## Usage
