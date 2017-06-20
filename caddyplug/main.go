@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
+	"sync"
+
+	"github.com/abiosoft/caddyplug"
 )
 
 const (
@@ -68,8 +73,9 @@ func main() {
 
 type shellCmd struct {
 	Silent bool
-	Dir    string
 	Stdin  bool
+	Stdout io.Writer
+	Dir    string
 }
 
 func (s shellCmd) run(command string, args ...string) error {
@@ -78,24 +84,63 @@ func (s shellCmd) run(command string, args ...string) error {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
+	if s.Stdout != nil {
+		cmd.Stdout = s.Stdout
+	}
 	if s.Stdin {
 		cmd.Stdin = os.Stdin
 	}
 	if s.Dir != "" {
 		cmd.Dir = s.Dir
 	}
+	cmd.Env = env()
 	return cmd.Run()
 }
 
+var once = struct {
+	goPath     sync.Once
+	pluginPath map[string]*sync.Once
+}{
+	pluginPath: map[string]*sync.Once{
+		"http": &sync.Once{},
+		"dns":  &sync.Once{},
+	},
+}
+
 func goPath() string {
+	p := filepath.Join(caddyplug.LibDir(), "gopath")
+	once.goPath.Do(func() {
+		os.MkdirAll(p, 0755)
+	})
+	return p
+}
+
+func systemGoPath() string {
 	if os.Getenv("GOPATH") == "" {
 		return filepath.Join(os.Getenv("HOME"), "go")
 	}
 	return os.Getenv("GOPATH")
 }
 
-func libraryPath(pluginType string) string {
-	p := filepath.Join(os.Getenv("HOME"), "lib", "caddy", pluginType)
-	os.MkdirAll(p, 0755)
+func pluginPath(pluginType string) string {
+	p := filepath.Join(caddyplug.PluginsDir(), pluginType)
+	once.pluginPath[pluginType].Do(func() {
+		os.MkdirAll(p, 0755)
+	})
 	return p
+}
+
+// env replaces the GOPATH in env vars and returns
+// resulting env vars.
+func env() []string {
+	env := []string{
+		"GOPATH=" + goPath(),
+	}
+	for _, e := range os.Environ() {
+		if strings.HasPrefix(e, "GOPATH=") {
+			continue
+		}
+		env = append(env, e)
+	}
+	return env
 }

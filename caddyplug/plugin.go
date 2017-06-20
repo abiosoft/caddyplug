@@ -21,10 +21,11 @@ func (p Plugin) Build() error {
 	if err := install(p.Package); err != nil {
 		return err
 	}
-	file, err := generate(libraryPath(p.Type), p)
+	file, err := generate(pluginPath(p.Type), p)
 	if err != nil {
 		return err
 	}
+	defer os.Remove(file)
 	return build(file, filepath.Join(filepath.Dir(file), p.Name+".so"))
 }
 
@@ -45,7 +46,7 @@ func (p Plugin) Installed() bool {
 
 // PluginFile returns the file path to the plugin .so file.
 func (p Plugin) PluginFile() string {
-	return filepath.Join(libraryPath(p.Type), p.Name+".so")
+	return filepath.Join(pluginPath(p.Type), p.Name+".so")
 }
 
 func initPlugins() error {

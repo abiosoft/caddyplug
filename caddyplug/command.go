@@ -124,8 +124,8 @@ func installCaddy([]string) {
 		// check if GOBIN is in PATH and use it instead
 		for _, binPath := range strings.Split(os.Getenv("PATH"),
 			string([]byte{filepath.ListSeparator})) {
-			if filepath.Clean(binPath) == filepath.Join(goPath(), "bin") {
-				outputFile = filepath.Join(goPath(), "bin", "caddy")
+			if filepath.Clean(binPath) == filepath.Join(systemGoPath(), "bin") {
+				outputFile = filepath.Join(systemGoPath(), "bin", "caddy")
 				break
 			}
 		}

@@ -14,7 +14,7 @@ func init() {
 }
 
 func loadPlugins(pluginType string) {
-	dir, err := os.Open(filepath.Join(pluginsDir(), pluginType))
+	dir, err := os.Open(filepath.Join(PluginsDir(), pluginType))
 	if err != nil {
 		return
 	}
@@ -23,14 +23,18 @@ func loadPlugins(pluginType string) {
 		fmt.Println(err)
 		return
 	}
-	for _, pluginName := range plugins {
-		if !strings.HasSuffix(pluginName, ".so") {
+	for _, pluginLib := range plugins {
+		if !strings.HasSuffix(pluginLib, ".so") {
 			continue
 		}
-		pluginFile := filepath.Join(dir.Name(), pluginName)
+		pluginName := strings.TrimSuffix(pluginLib, ".so")
+		pluginFile := filepath.Join(dir.Name(), pluginLib)
 		_, err := plugin.Open(pluginFile)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("error loading "+pluginName+": ", err)
+			loadError = true
+			continue
 		}
+		loadedPlugins[pluginType] = append(loadedPlugins[pluginType], pluginName)
 	}
 }
