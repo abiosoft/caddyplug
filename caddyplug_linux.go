@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"plugin"
 	"strings"
+
+	"github.com/abiosoft/caddyplug/internal"
 )
 
 func init() {
@@ -14,7 +16,7 @@ func init() {
 }
 
 func loadPlugins(pluginType string) {
-	dir, err := os.Open(filepath.Join(PluginsDir(), pluginType))
+	dir, err := os.Open(filepath.Join(internal.PluginsDir(), pluginType))
 	if err != nil {
 		return
 	}

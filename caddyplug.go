@@ -3,8 +3,6 @@ package caddyplug
 import (
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -52,13 +50,3 @@ var (
 	}
 	loadError bool
 )
-
-// PluginsDir is the directory for built plugins.
-func PluginsDir() string {
-	return filepath.Join(LibDir(), "plugins")
-}
-
-// LibDir is the directory for caddy plugin loader resources.
-func LibDir() string {
-	return filepath.Join(os.Getenv("HOME"), "lib", "caddy")
-}

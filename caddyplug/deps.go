@@ -92,7 +92,7 @@ func fetchCaddy() error {
 			run("git", "checkout", caddyVersion)
 	})
 	e.Add(func() error {
-		return shellCmd{}.run("go", "get", "-v", "github.com/mholt/caddy")
+		return install("github.com/mholt/caddy")
 	})
 	return e.Exec()
 }

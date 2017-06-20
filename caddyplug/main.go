@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/abiosoft/caddyplug"
+	"github.com/abiosoft/caddyplug/internal"
 )
 
 const (
@@ -108,7 +108,7 @@ var once = struct {
 }
 
 func goPath() string {
-	p := filepath.Join(caddyplug.LibDir(), "gopath")
+	p := filepath.Join(internal.LibDir(), "gopath")
 	once.goPath.Do(func() {
 		os.MkdirAll(p, 0755)
 	})
@@ -123,7 +123,7 @@ func systemGoPath() string {
 }
 
 func pluginPath(pluginType string) string {
-	p := filepath.Join(caddyplug.PluginsDir(), pluginType)
+	p := filepath.Join(internal.PluginsDir(), pluginType)
 	once.pluginPath[pluginType].Do(func() {
 		os.MkdirAll(p, 0755)
 	})
