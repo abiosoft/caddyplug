@@ -67,9 +67,9 @@ func uninstallPlugins(pluginNames []string) {
 		}
 		if err := plugin.Remove(); err != nil {
 			fmt.Println(err)
-			success = append(success, plugin.Name)
-		} else {
 			failures = append(failures, plugin.Name)
+		} else {
+			success = append(success, plugin.Name)
 		}
 	}
 	if len(success) > 0 {
