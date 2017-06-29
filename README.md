@@ -3,6 +3,8 @@ caddyplug
 
 caddyplug is an experimental [Caddy](https://caddyserver.com) plugin manager using Go plugins.
 
+[Demonstration Video](https://youtu.be/uKSgHhh6-rA)
+
 ## Requirements
 * Go 1.8
 * Linux
