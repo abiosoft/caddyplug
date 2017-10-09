@@ -25,6 +25,7 @@ go get github.com/abiosoft/caddyplug/caddyplug
     uninstall     uninstall plugins
     list          list plugins
     install-caddy install caddy
+    package       get plugin package
 ```
 
 Example
@@ -36,7 +37,7 @@ $ caddyplug install git linode
 
 ## Goal
 ### Building
-Current: 
+Current:
 * Edit source and add import line for plugin
 * Rebuild Caddy
 * Or select plugins and download on caddyserver.com/download
