@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	noPlugin      = "no plugins found, use caddyplug to add plugins"
-	rebuildPlugin = "error occured while loading some plugins, try reinstalling them"
+	errNoPlugin      = "no plugins found, use caddyplug to add plugins"
+	errRebuildPlugin = "error occured while loading some plugins, try reinstalling them"
 )
 
 func init() {
@@ -35,9 +35,9 @@ var hook caddy.EventHook = func(event caddy.EventName, info interface{}) error {
 			count += len(dnsPlugins)
 		}
 		if loadError {
-			fmt.Println(rebuildPlugin)
+			fmt.Println(errRebuildPlugin)
 		} else if count == 0 {
-			fmt.Println(noPlugin)
+			fmt.Println(errNoPlugin)
 		}
 	}
 	return nil

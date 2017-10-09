@@ -20,6 +20,7 @@ var (
 		"uninstall":     uninstallPlugins,
 		"list":          listPlugins,
 		"install-caddy": installCaddy,
+		"package":       pluginPackage,
 		"help":          func([]string) { usage() },
 	}
 
@@ -37,7 +38,7 @@ func installPlugins(pluginNames []string) {
 			errored = true
 			continue
 		}
-		fmt.Println("installing", plugin.Name+"...")
+		log("installing", plugin.Name+"...")
 		if err := plugin.Build(); err != nil {
 			fmt.Println(err)
 			errored = true
@@ -62,11 +63,10 @@ func uninstallPlugins(pluginNames []string) {
 	for _, pluginName := range pluginNames {
 		plugin, ok := plugins[pluginName]
 		if !ok {
-			fmt.Println("plugin not found", pluginName)
-			return
+			exitWithError(fmt.Sprintf("plugin not found %s", pluginName))
 		}
 		if err := plugin.Remove(); err != nil {
-			fmt.Println(err)
+			log(err)
 			failures = append(failures, plugin.Name)
 		} else {
 			success = append(success, plugin.Name)
@@ -149,11 +149,29 @@ func installCaddy([]string) {
 	})
 
 	if err := e.Exec(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		exitWithError(err)
 	}
+}
+
+func pluginPackage(args []string) {
+	if len(args) == 0 {
+		exitWithError("plugin name required")
+	}
+	name := args[0]
+	p, ok := plugins[name]
+	if !ok {
+		exitWithError("plugin not found")
+	}
+	fmt.Println(p.Package)
 }
 
 func writable(path string) bool {
 	return unix.Access(path, unix.W_OK) == nil
+}
+
+func exitWithError(errs ...interface{}) {
+	if len(errs) > 0 {
+		fmt.Fprintln(os.Stderr, errs...)
+	}
+	os.Exit(1)
 }

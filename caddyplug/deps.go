@@ -66,7 +66,7 @@ func (d dependencies) update() error {
 	if d.check() {
 		return nil
 	}
-	fmt.Println("fetching missing dependencies:", d.missing())
+	log("fetching missing dependencies:", d.missing())
 	var e errs.Group
 	for _, dep := range d {
 		if !dep.installed {
@@ -74,8 +74,8 @@ func (d dependencies) update() error {
 		}
 	}
 	e.Add(func() error {
-		fmt.Println("done fetching depedencies.")
-		fmt.Println()
+		log("done fetching depedencies.")
+		log()
 		return nil
 	})
 	return e.Exec()
@@ -119,4 +119,8 @@ func fetchDNSProviders() error {
 
 func fetchDependencies() error {
 	return packageDependecies.update()
+}
+
+func log(a ...interface{}) {
+	fmt.Fprintln(os.Stderr, a...)
 }

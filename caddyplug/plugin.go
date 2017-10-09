@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var plugins = make(map[string]Plugin)
+var plugins = map[string]Plugin{}
 
 // Plugin is a caddy plugin.
 type Plugin struct {

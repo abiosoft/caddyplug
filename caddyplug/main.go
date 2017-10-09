@@ -29,8 +29,12 @@ import _ "{package}"
 `
 )
 
-func usage() {
-	fmt.Println(`  Usage:
+var (
+	DynamicMode bool
+)
+
+func usage(err ...interface{}) {
+	exitWithError(append(err, `  Usage:
     caddyplug <command> [plugins...]
 
   Commands:
@@ -38,13 +42,13 @@ func usage() {
     uninstall     uninstall plugins
     list          list plugins
     install-caddy install caddy
-`)
+    package       get plugin package
+`)...)
 }
 
 func init() {
 	if runtime.GOOS != "linux" {
-		fmt.Println("caddyplug is only supported on Linux")
-		os.Exit(1)
+		exitWithError("caddyplug is only supported on Linux")
 	}
 }
 
@@ -59,14 +63,12 @@ func main() {
 	}
 	cmd, ok := commands[os.Args[1]]
 	if !ok {
-		fmt.Println("unkown command", os.Args[1])
-		usage()
+		usage(fmt.Sprintf("unkown command %s", os.Args[1]))
 		return
 	}
 
 	if err := initPlugins(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		exitWithError(err)
 	}
 	cmd(pluginNames)
 }
@@ -81,7 +83,7 @@ type shellCmd struct {
 func (s shellCmd) run(command string, args ...string) error {
 	cmd := exec.Command(command, args...)
 	if !s.Silent {
-		cmd.Stdout = os.Stdout
+		cmd.Stdout = os.Stderr
 		cmd.Stderr = os.Stderr
 	}
 	if s.Stdout != nil {
