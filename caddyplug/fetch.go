@@ -41,8 +41,8 @@ func fetchHTTPPlugins() ([]Plugin, error) {
 	cmap := ast.NewCommentMap(fset, f, f.Comments)
 	c := node.Values[0].(*ast.CompositeLit)
 	for _, m := range c.Elts {
-		if _, ok := cmap[m]; ok {
-			pkg := strings.TrimSpace(cmap[m][0].Text())
+		if cm, ok := cmap[m]; ok {
+			pkg := strings.TrimSpace(cm[len(cm)-1].Text())
 			directive, err := strconv.Unquote(m.(*ast.BasicLit).Value)
 			if err != nil {
 				return plugins, err
