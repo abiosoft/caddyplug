@@ -13,8 +13,9 @@ import (
 )
 
 var fetchers = map[string]pluginFetcher{
-	"http": fetcherFunc(fetchHTTPPlugins),
-	"dns":  fetcherFunc(fetchDNSPlugins),
+	"http":   fetcherFunc(fetchHTTPPlugins),
+	"dns":    fetcherFunc(fetchDNSPlugins),
+	"server": fetcherFunc(fetchServerTypePlugins),
 }
 
 type pluginFetcher interface {
@@ -87,4 +88,19 @@ func fetchDNSPlugins() ([]Plugin, error) {
 		plugins = append(plugins, plugin)
 	}
 	return plugins, nil
+}
+
+func fetchServerTypePlugins() ([]Plugin, error) {
+	return []Plugin{
+		{
+			Type:    "server",
+			Name:    "net",
+			Package: "github.com/pieterlouw/caddy-net/caddynet",
+		},
+		{
+			Type:    "server",
+			Name:    "dns",
+			Package: "github.com/coredns/coredns",
+		},
+	}, nil
 }
