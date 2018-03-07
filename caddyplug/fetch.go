@@ -100,7 +100,7 @@ func fetchServerTypePlugins() ([]Plugin, error) {
 		{
 			Type:    "server",
 			Name:    "dns",
-			Package: "github.com/coredns/coredns/core",
+			Package: "github.com/coredns/coredns/core/dnsserver",
 		},
 	}, nil
 }
