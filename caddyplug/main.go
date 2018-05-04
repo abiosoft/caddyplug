@@ -29,10 +29,6 @@ import _ "{package}"
 `
 )
 
-var (
-	DynamicMode bool
-)
-
 func usage(err ...interface{}) {
 	exitWithError(append(err, `  Usage:
     caddyplug <command> [plugins...]
@@ -106,7 +102,7 @@ var once = struct {
 	pluginPath: map[string]*sync.Once{
 		"http":   &sync.Once{},
 		"dns":    &sync.Once{},
-		"server": &sync.Once{},
+		"others": &sync.Once{},
 	},
 }
 

@@ -15,7 +15,7 @@ import (
 var fetchers = map[string]pluginFetcher{
 	"http":   fetcherFunc(fetchHTTPPlugins),
 	"dns":    fetcherFunc(fetchDNSPlugins),
-	"server": fetcherFunc(fetchServerTypePlugins),
+	"others": fetcherFunc(fetchOtherPlugins),
 }
 
 type pluginFetcher interface {
@@ -90,7 +90,8 @@ func fetchDNSPlugins() ([]Plugin, error) {
 	return plugins, nil
 }
 
-func fetchServerTypePlugins() ([]Plugin, error) {
+// TODO: this needs to be dynamic.
+func fetchOtherPlugins() ([]Plugin, error) {
 	return []Plugin{
 		{
 			Type:    "server",
@@ -101,6 +102,16 @@ func fetchServerTypePlugins() ([]Plugin, error) {
 			Type:    "server",
 			Name:    "dns",
 			Package: "github.com/coredns/coredns/core/dnsserver",
+		},
+		{
+			Type:    "caddyfile",
+			Name:    "docker",
+			Package: "github.com/lucaslorentz/caddy-docker-proxy/plugin",
+		},
+		{
+			Type:    "hook",
+			Name:    "service",
+			Package: "github.com/hacdias/caddy-service",
 		},
 	}, nil
 }
