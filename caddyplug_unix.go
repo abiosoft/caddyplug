@@ -1,7 +1,10 @@
+// +build linux darwin
+
 package caddyplug
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"plugin"
@@ -16,6 +19,7 @@ func init() {
 }
 
 func loadPlugins(pluginType string) {
+	log.Println("loading....", pluginType)
 	dir, err := os.Open(filepath.Join(internal.PluginsDir(), pluginType))
 	if err != nil {
 		return

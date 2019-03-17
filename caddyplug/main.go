@@ -43,8 +43,16 @@ func usage(err ...interface{}) {
 }
 
 func init() {
-	if runtime.GOOS != "linux" {
-		exitWithError("caddyplug is only supported on Linux")
+	switch runtime.GOOS {
+	case "linux", "darwin":
+	default:
+		exitWithError("caddyplug is only supported on Linux and macOS")
+	}
+
+	// init once
+	once.pluginPath = map[string]*sync.Once{}
+	for _, pluginType := range []string{"http", "dns", "server", "caddyfile", "hook"} {
+		once.pluginPath[pluginType] = &sync.Once{}
 	}
 }
 
@@ -95,15 +103,9 @@ func (s shellCmd) run(command string, args ...string) error {
 	return cmd.Run()
 }
 
-var once = struct {
+var once struct {
 	goPath     sync.Once
 	pluginPath map[string]*sync.Once
-}{
-	pluginPath: map[string]*sync.Once{
-		"http":   &sync.Once{},
-		"dns":    &sync.Once{},
-		"others": &sync.Once{},
-	},
 }
 
 func goPath() string {
