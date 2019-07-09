@@ -19,7 +19,7 @@ type dependencies []struct {
 }
 
 var packageDependecies = dependencies{
-	{name: "caddy", importPath: "github.com/mholt/caddy", updateFunc: fetchCaddy},
+	{name: "caddy", importPath: "github.com/caddyserver/caddy", updateFunc: fetchCaddy},
 	{name: "dnsproviders", importPath: "github.com/caddyserver/dnsproviders", updateFunc: fetchDNSProviders},
 	{name: "hook.pluginloader", importPath: "github.com/abiosoft/caddyplug", updateFunc: fetchCaddyPlug},
 }
@@ -84,15 +84,15 @@ func (d dependencies) update() error {
 func fetchCaddy() error {
 	var e errs.Group
 	e.Add(func() error {
-		return shellCmd{}.run("go", "get", "-d", "github.com/mholt/caddy")
+		return shellCmd{}.run("go", "get", "-d", "github.com/caddyserver/caddy")
 	})
-	caddyPath := filepath.Join(goPath(), "src", "github.com/mholt/caddy")
+	caddyPath := filepath.Join(goPath(), "src", "github.com/caddyserver/caddy")
 	e.Add(func() error {
 		return shellCmd{Dir: caddyPath, Silent: true}.
 			run("git", "checkout", caddyVersion)
 	})
 	e.Add(func() error {
-		return install("github.com/mholt/caddy")
+		return install("github.com/caddyserver/caddy")
 	})
 	return e.Exec()
 }
